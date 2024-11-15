@@ -1,0 +1,14 @@
+services:
+  soketi-frontend:
+    image: node:22.5.1
+    container_name: soketi-frontend
+    tty: true
+    working_dir: /usr/src/app/
+    volumes:
+      - ../../../:/usr/src/app/
+    networks:
+      - soketi-network
+
+networks:
+  soketi-network:
+    external: true
