@@ -1,29 +1,28 @@
 <template>
 	<div>
-		<button @click="test">test</button>
+		<button @click="sendMessage">test</button>
 	</div>
 </template>
 
 <script setup lang="ts">
-import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 
-const test = () => {
-	console.log(123)
+const pusher = new Pusher('app-key', {
+	cluster: 'mt1',
+	wsHost: 'localhost',
+	wsPort: 6001,
+	forceTLS: false,
+	enabledTransports: ['ws', 'wss']
+})
 
-	let client = new Pusher('app-key', {
-		wsHost: '127.0.0.1',
-		wsPort: 6001,
-		forceTLS: false,
-		cluster: 'mt1',
-		// encrypted: true,
-		disableStats: true,
-		enabledTransports: ['ws', 'wss'],
-	})
+const channel = pusher.subscribe('chat')
 
-	client.subscribe('channel1').bind('message', (message: string) => {
-		alert(`${message.sender} says: ${message.content}`)
-	})
+channel.bind('message.sent', (data: object) => {
+	console.log('Message received:', data)
+})
+
+function sendMessage() {
+	channel.trigger('client-message', { test1: 'message sent' })
 }
 </script>
 
